@@ -23,6 +23,9 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -31,7 +34,7 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/health", "/actuator/**").permitAll()
+                        .requestMatchers("/auth/**", "/health", "/actuator/**", "/dest/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
