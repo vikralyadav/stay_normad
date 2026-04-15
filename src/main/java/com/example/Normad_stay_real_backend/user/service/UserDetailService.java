@@ -35,7 +35,17 @@ public class UserDetailService {
                 .orElseThrow(() -> new ResourceNotFoundException("UserDetail", "credentialId", credentialId.toString()));
 
 
-        return mapToResponse(user);
+        return UserDetailResponse.builder()
+                .id(user.getId())
+                .credentialId(user.getCredentialId())
+                .username(user.getUsername())
+                .profilePic(user.getProfilePic())
+                .bio(user.getBio())
+                .address(user.getAddress())
+                .role(user.getRole())
+                .phoneNo(user.getPhoneNo())
+                .email(user.getEmail())
+                .build();
     }
 
 
@@ -64,7 +74,17 @@ public class UserDetailService {
         user = userDetailsRepository.save(user);
         log.info("Profile updated for credentialId: {}", credentialId);
 
-        return mapToResponse(user);
+        return UserDetailResponse.builder()
+                .id(user.getId())
+                .credentialId(user.getCredentialId())
+                .username(user.getUsername())
+                .profilePic(user.getProfilePic())
+                .bio(user.getBio())
+                .address(user.getAddress())
+                .role(user.getRole())
+                .phoneNo(user.getPhoneNo())
+                .email(user.getEmail())
+                .build();
     }
 
     private UUID extractCredentialId(String authHeader) {
@@ -80,18 +100,5 @@ public class UserDetailService {
 
 
 
-    private UserDetailResponse mapToResponse(UserDetail user) {
-        return UserDetailResponse.builder()
-                .id(user.getId())
-                .credentialId(user.getCredentialId())
-                .username(user.getUsername())
-                .profilePic(user.getProfilePic())
-                .bio(user.getBio())
-                .address(user.getAddress())
-                .role(user.getRole())
-                .phoneNo(user.getPhoneNo())
-                .email(user.getEmail())
-                .build();
-    }
 
 }
