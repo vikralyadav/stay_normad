@@ -9,6 +9,8 @@ import com.example.Normad_stay_real_backend.common.entity.Role;
 import com.example.Normad_stay_real_backend.common.exception.BadRequestException;
 import com.example.Normad_stay_real_backend.common.exception.ResourceNotFoundException;
 import com.example.Normad_stay_real_backend.common.utils.JwtUtils;
+import com.example.Normad_stay_real_backend.user.entity.UserDetail;
+import com.example.Normad_stay_real_backend.user.repository.UserDetailsRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class AuthService {
 
 
     private final UserCredentialRepository userCredentialRepository;
+    private final UserDetailsRepository userDetailsRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final ApplicationEventPublisher eventPublisher;
@@ -68,6 +71,17 @@ public class AuthService {
         user = userCredentialRepository.save(user);
 
 
+        // Create corresponding UserDetail record so user module can find this user
+        UserDetail userDetail = UserDetail.builder()
+                .credentialId(user.getId())
+                .phoneNo(user.getPhoneNo())
+                .email(user.getEmail())
+                .role(role)
+                .build();
+
+        userDetailsRepository.save(userDetail);
+        log.info("Created UserDetail for credentialId: {}", user.getId());
+
 
       String accessToken = jwtUtils.generateAccessToken(user.getPhoneNo(), user.getRole(), user.getId());
 
@@ -102,9 +116,6 @@ public class AuthService {
                 .accessToken(accessToken)
                 .Id(user.getId())
                 .build();
-
-
-
 
 
 

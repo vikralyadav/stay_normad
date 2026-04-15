@@ -1,6 +1,7 @@
 package com.example.Normad_stay_real_backend.common.utils;
 
 import com.example.Normad_stay_real_backend.common.entity.Role;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,9 +43,32 @@ public class JwtUtils {
     }
 
 
+    public Claims parseToken(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
 
+    public UUID getUserIdFromToken(String token) {
+        Claims claims = parseToken(token);
+        return UUID.fromString(claims.get("userId", String.class));
+    }
 
+    public String getRoleFromToken(String token) {
+        Claims claims = parseToken(token);
+        return claims.get("role", String.class);
+    }
 
+    public boolean isTokenValid(String token) {
+        try {
+            Claims claims = parseToken(token);
+            return !claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
 
 }
