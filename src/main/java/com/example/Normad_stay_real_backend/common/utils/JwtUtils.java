@@ -56,6 +56,13 @@ public class JwtUtils {
         return UUID.fromString(claims.get("userId", String.class));
     }
 
+
+//    public Role getUserRole(String token){
+//        Claims claims = parseToken(token);
+//
+//        return Role.fromRole(claims.get("Role", String.class));
+//    }
+
     public String getRoleFromToken(String token) {
         Claims claims = parseToken(token);
         return claims.get("role", String.class);
