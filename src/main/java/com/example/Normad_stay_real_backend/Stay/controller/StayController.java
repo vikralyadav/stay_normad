@@ -1,6 +1,7 @@
 package com.example.Normad_stay_real_backend.Stay.controller;
 
 
+import com.example.Normad_stay_real_backend.Stay.dto.AddStayRequest;
 import com.example.Normad_stay_real_backend.Stay.dto.StayDetailRequest;
 import com.example.Normad_stay_real_backend.Stay.dto.StayDetailResponse;
 import com.example.Normad_stay_real_backend.Stay.service.StayService;
@@ -31,6 +32,20 @@ public class StayController {
                 .body(ApiResponse.success("New City Added Success", res));
 
     }
+
+
+    @PostMapping("/addYourStay")
+    private ResponseEntity<ApiResponse<String>> addYourStay(@RequestHeader("Authorization") String authHeader, @Valid @RequestBody AddStayRequest request){
+        String res = stayService.addyourStay(authHeader, request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("city addded success", res));
+    }
+
+
+
+
+
 
 
 

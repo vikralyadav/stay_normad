@@ -58,6 +58,4 @@ public class Stay {
     private Integer totalReviews;
 
     private Boolean isAvailable;
-
-    private UUID ownerId;
 }

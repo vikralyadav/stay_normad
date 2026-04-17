@@ -1,6 +1,7 @@
 package com.example.Normad_stay_real_backend.Stay.service;
 
 
+import com.example.Normad_stay_real_backend.Stay.dto.AddStayRequest;
 import com.example.Normad_stay_real_backend.Stay.dto.StayDetailRequest;
 import com.example.Normad_stay_real_backend.Stay.dto.StayDetailResponse;
 import com.example.Normad_stay_real_backend.Stay.entity.Stay;
@@ -62,8 +63,58 @@ public class StayService {
                  .rating(stay.getRating())
                  .totalReviews(stay.getTotalReviews())
                  .isAvailable(stay.getIsAvailable())
-                 .ownerId(stay.getOwnerId())
                  .build();
+     }
+
+
+
+     @Transactional
+     public String addyourStay(String authHeader, AddStayRequest addStayRequest){
+
+
+
+         String role =  getUserRole(authHeader);
+
+
+         if(!"OWNER".equals(role)){
+             throw new BadRequestException("You are not authorize to add stay");
+         }
+
+
+         if ( !authHeader.startsWith("Bearer ")) {
+             throw new BadRequestException("Missing or invalid Authorization header");
+         }
+         String token = authHeader.substring(7);
+         if (!jwtUtils.isTokenValid(token)) {
+             throw new BadRequestException("Invalid or expired token");
+         }
+
+         Stay stay = Stay.builder()
+                 .stayName(addStayRequest.getStayName())
+                 .description(addStayRequest.getDescription())
+                 .city(addStayRequest.getCity())
+                 .state(addStayRequest.getState())
+                 .country(addStayRequest.getCountry())
+                 .images(addStayRequest.getImages())
+                 .amenities(addStayRequest.getAmenities())
+                 .basePrice(addStayRequest.getBasePrice())
+                 .price7Days(addStayRequest.getPrice7Days())
+                 .price15Days(addStayRequest.getPrice15Days())
+                 .price30Days(addStayRequest.getPrice30Days())
+                 .maxGuests(addStayRequest.getMaxGuests())
+                 .bedrooms(addStayRequest.getBedrooms())
+                 .bathrooms(addStayRequest.getBathrooms())
+                 .isAvailable(true)
+                 .rating(0.0)
+                 .totalReviews(0)
+                 .build();
+
+         stayRepository.save(stay);
+
+         return "Stay added successfully";
+
+
+
 
 
 
@@ -72,7 +123,20 @@ public class StayService {
      }
 
 
+    private String getUserRole(String authHeader){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new BadRequestException("Missing or invalid Authorization header");
+        }
 
+
+        String token = authHeader.substring(7);
+        if (!jwtUtils.isTokenValid(token)) {
+            throw new BadRequestException("Invalid or expired token");
+        }
+        return jwtUtils.getRoleFromToken(token);
+
+
+    }
 
 
 
