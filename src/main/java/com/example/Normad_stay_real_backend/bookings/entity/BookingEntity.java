@@ -22,7 +22,6 @@ public class BookingEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID bookingId;
 
-    // 🔗 Relations
     @Column(nullable = false)
     private UUID stayId;
 

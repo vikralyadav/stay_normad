@@ -21,20 +21,16 @@ public class AuthController {
 
     private final AuthService authService;
 
-
-
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<AuthResponse>> signUpUser(
-            @Valid @RequestBody SignupRequest request
-    ){
+            @Valid @RequestBody SignupRequest request) {
         AuthResponse response = authService.signupUser(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("User registered successfully", response));
     }
 
-
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> loginUser(@Valid @RequestBody LoginRequest request){
+    public ResponseEntity<ApiResponse<AuthResponse>> loginUser(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.loginUser(request);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("LoginSuccess", response));
