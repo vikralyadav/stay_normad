@@ -2,6 +2,7 @@ package com.example.Normad_stay_real_backend.Stay.service;
 
 
 import com.example.Normad_stay_real_backend.Stay.dto.AddStayRequest;
+import com.example.Normad_stay_real_backend.Stay.dto.GetStayRequest;
 import com.example.Normad_stay_real_backend.Stay.dto.StayDetailRequest;
 import com.example.Normad_stay_real_backend.Stay.dto.StayDetailResponse;
 import com.example.Normad_stay_real_backend.Stay.entity.Stay;
@@ -13,6 +14,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -123,6 +127,28 @@ public class StayService {
      }
 
 
+
+     @Transactional
+     public List<Stay> getAllStay(String authHeader, GetStayRequest request){
+
+         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+             throw new BadRequestException("Missing or invalid Authorization header");
+         }
+         String token = authHeader.substring(7);
+         if (!jwtUtils.isTokenValid(token)) {
+             throw new BadRequestException("Invalid or expired token");
+         }
+
+
+
+         return stayRepository.findStayByCity(request.getCity())
+                 .orElse(Collections.emptyList());
+
+
+
+     }
+
+
     private String getUserRole(String authHeader){
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new BadRequestException("Missing or invalid Authorization header");
@@ -137,6 +163,11 @@ public class StayService {
 
 
     }
+
+
+
+
+
 
 
 

@@ -70,8 +70,6 @@ public class AuthService {
 
         user = userCredentialRepository.save(user);
 
-
-        // Create corresponding UserDetail record so user module can find this user
         UserDetail userDetail = UserDetail.builder()
                 .credentialId(user.getId())
                 .phoneNo(user.getPhoneNo())
@@ -87,8 +85,8 @@ public class AuthService {
 
       return AuthResponse.builder()
               .accessToken(accessToken)
-              .Id(user.getId())
-              .Role(role)
+              .id(user.getId())
+              .role(role)
               .build();
 
     }
@@ -111,10 +109,10 @@ public class AuthService {
 
 
 
-        return AuthResponse
-                .builder()
+        return AuthResponse.builder()
                 .accessToken(accessToken)
-                .Id(user.getId())
+                .id(user.getId())
+                .role(user.getRole())
                 .build();
 
 

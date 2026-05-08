@@ -2,8 +2,10 @@ package com.example.Normad_stay_real_backend.Stay.controller;
 
 
 import com.example.Normad_stay_real_backend.Stay.dto.AddStayRequest;
+import com.example.Normad_stay_real_backend.Stay.dto.GetStayRequest;
 import com.example.Normad_stay_real_backend.Stay.dto.StayDetailRequest;
 import com.example.Normad_stay_real_backend.Stay.dto.StayDetailResponse;
+import com.example.Normad_stay_real_backend.Stay.entity.Stay;
 import com.example.Normad_stay_real_backend.Stay.service.StayService;
 import com.example.Normad_stay_real_backend.common.dto.ApiResponse;
 import jakarta.validation.Valid;
@@ -11,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/stays")
@@ -40,6 +44,17 @@ public class StayController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("city addded success", res));
+    }
+
+
+    @PostMapping("/getStayList")
+    private ResponseEntity<ApiResponse<List<Stay>>> getStays(@RequestHeader("Authorization") String authHeader, @Valid @RequestBody GetStayRequest request ){
+
+        List<Stay>  stays = stayService.getAllStay(authHeader, request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(stays));
+
     }
 
 
