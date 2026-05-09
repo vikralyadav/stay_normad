@@ -7,8 +7,12 @@ import com.example.Normad_stay_real_backend.bookings.enums.BookingStatus;
 import com.example.Normad_stay_real_backend.bookings.enums.PaymentStatus;
 import com.example.Normad_stay_real_backend.bookings.repository.BookingRepository;
 import com.example.Normad_stay_real_backend.common.exception.BadRequestException;
+import com.example.Normad_stay_real_backend.common.exception.ResourceNotFoundException;
 import com.example.Normad_stay_real_backend.common.utils.JwtUtils;
+import com.example.Normad_stay_real_backend.user.entity.UserDetail;
+import com.example.Normad_stay_real_backend.user.repository.UserDetailsRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,27 +28,26 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final JwtUtils jwtUtils;
+    private final UserDetailsRepository userDetailsRepository;
 
 
 
     @Transactional
     public String createBooking(String authHeader, CreateBookingRequest request) {
 
-        String role = getUserRole(authHeader);
+        String token = authHeader.substring(7);
+        String email = request.getEmail();
 
-        if (!"USER".equals(role)) {
-            throw new BadRequestException("You are not authorized to create booking");
-        }
+        UserDetail user = userDetailsRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         int totalDays = 7;
-
         LocalDate checkIn = request.getCheckInDate();
         LocalDate checkOut = checkIn.plusDays(totalDays);
 
-
-
         BookingEntity booking = BookingEntity.builder()
-                .stayId(request.stay_id)
+                .userId(user.getId())
+                .stayId(request.getStay_id())
                 .checkInDate(checkIn)
                 .checkOutDate(checkOut)
                 .totalDays(totalDays)
@@ -61,23 +64,5 @@ public class BookingService {
         return "Booking created successfully";
     }
 
-
-
-
-
-    private String getUserRole(String authHeader){
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new BadRequestException("Missing or invalid Authorization header");
-        }
-
-
-        String token = authHeader.substring(7);
-        if (!jwtUtils.isTokenValid(token)) {
-            throw new BadRequestException("Invalid or expired token");
-        }
-        return jwtUtils.getRoleFromToken(token);
-
-
-    }
 
 }

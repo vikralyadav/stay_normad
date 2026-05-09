@@ -1,6 +1,7 @@
 package com.example.Normad_stay_real_backend.bookings.dto;
 
 import com.example.Normad_stay_real_backend.bookings.enums.PackageType;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -21,6 +22,11 @@ public class CreateBookingRequest {
 
     @NotBlank(message = "please select checking date")
     public LocalDate checkInDate;
+
+
+    @NotBlank(message = "please enter your mail")
+    @Email(message = "please enter valid email")
+    private String email;
 
 
 

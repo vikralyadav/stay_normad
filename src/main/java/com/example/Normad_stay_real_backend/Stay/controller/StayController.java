@@ -20,18 +20,10 @@ import java.util.List;
 @RequestMapping("/stays")
 @RequiredArgsConstructor
 public class StayController {
-
-
-
     private final StayService stayService;
-
-
     @PostMapping("/getStayDetails")
     private ResponseEntity<ApiResponse<StayDetailResponse>> _getStayDetails(@RequestHeader("Authorization") String authHeader, @Valid @RequestBody StayDetailRequest request){
-
         StayDetailResponse res = stayService.getStayDetails(authHeader, request);
-
-
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("New City Added Success", res));
 
@@ -43,7 +35,7 @@ public class StayController {
         String res = stayService.addyourStay(authHeader, request);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success("city addded success", res));
+                .body(ApiResponse.success("Stay Added Successfully", res));
     }
 
 
